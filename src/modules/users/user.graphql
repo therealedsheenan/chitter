@@ -1,0 +1,32 @@
+type Query {
+    getUsers: [User]
+}
+
+type Mutation {
+    createUser(createUserInput: CreateUserInput): User
+    loginUser(loginUserInput: LoginUserInput): UserWithToken
+}
+
+input LoginUserInput {
+    username: String
+    password: String
+}
+
+type UserWithToken {
+    user: User
+    token: String
+}
+
+input CreateUserInput {
+    email: String
+    username: String
+    password: String
+}
+
+type User {
+    id: Int
+    email: String
+    username: String
+    password: String
+    chits: [Chit]
+}
