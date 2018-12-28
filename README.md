@@ -1,5 +1,5 @@
 # Chitter
-Twitter clone using nestjs
+Twitter clone using typescript and graphql
 
 ## Installation
 
