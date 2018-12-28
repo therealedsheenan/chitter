@@ -1,0 +1,30 @@
+
+mutation Createuser {
+  createUser(user: { email: "test2@123.com", username: "test2", password:"password123" }) {
+    email
+  }
+}
+
+ query {
+   user(userId: 2) {
+     username
+   }
+ }
+
+ query {
+   users {
+     username,
+     email
+   }
+ }
+
+mutation CreateChit {
+  createChit (chit:{ content: "This is my first chit", authorId: 2 }) {
+    content,
+    id,
+    author {
+    	id,
+    	username
+  	}
+  }
+}
