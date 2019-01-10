@@ -4,8 +4,6 @@ import {
   Column,
   PrimaryGeneratedColumn,
   ManyToOne,
-  CreateDateColumn,
-  UpdateDateColumn,
 } from 'typeorm';
 import { Length } from 'class-validator';
 import { RelationColumn } from '../helpers';
@@ -22,10 +20,6 @@ export class Chit {
   @Column()
   @Length(1, 100)
   content: string;
-
-  @CreateDateColumn()
-
-  @UpdateDateColumn()
 
   @Field(type => User)
   @ManyToOne(type => User)

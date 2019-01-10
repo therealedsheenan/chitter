@@ -8,3 +8,18 @@ export class ChitInput {
   @Field(type => Int)
   authorId: number;
 }
+
+@InputType()
+export class ChitDeleteInput {
+  @Field()
+  chitId: number;
+}
+
+@InputType()
+export class ChitUpdateInput {
+  @Field()
+  id: number;
+
+  @Field()
+  content: string;
+}

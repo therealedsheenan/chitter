@@ -4,7 +4,7 @@ import { InjectRepository } from 'typeorm-typedi-extensions';
 
 import { Chit } from '../entities/chit';
 import { User } from '../entities/user';
-import { ChitInput } from './types/chit-input';
+import { ChitInput, ChitDeleteInput, ChitUpdateInput } from './types/chit-input';
 import { Context } from '..';
 
 @Resolver(of => Chit)
@@ -41,5 +41,25 @@ export class ChitResolver {
       authorId: user.id,
     });
     return await this.chitRepository.save(chit);
+  }
+
+  @Mutation(returns => Chit)
+  async deleteChit(
+    @Arg('chit') chitDeleteInput: ChitDeleteInput,
+    ): Promise<any> {
+    const findChit = await this.chitRepository.findOne(chitDeleteInput.chitId);
+    return await this.chitRepository.remove(findChit);
+  }
+
+  @Mutation(returns => Chit)
+  async updateChit(
+    @Arg('chit') chitUpdateInput: ChitUpdateInput,
+  ): Promise<Chit> {
+    await this.chitRepository.update(
+      chitUpdateInput.id, {
+        ...chitUpdateInput,
+      },
+    );
+    return await this.chitRepository.findOne(chitUpdateInput.id);
   }
 }
