@@ -11,3 +11,12 @@ export class UserInput {
   @Field()
   password: string;
 }
+
+@InputType()
+export class UserLoginInput {
+  @Field()
+  username: string;
+
+  @Field()
+  password: string;
+}

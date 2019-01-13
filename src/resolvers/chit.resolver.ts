@@ -1,11 +1,10 @@
-import { Resolver, FieldResolver, Root, Query, Arg, Int, Mutation, Ctx } from 'type-graphql';
+import { Resolver, FieldResolver, Root, Query, Arg, Int, Mutation, Ctx, Authorized } from 'type-graphql';
 import { Repository } from 'typeorm';
 import { InjectRepository } from 'typeorm-typedi-extensions';
 
 import { Chit } from '../entities/chit';
 import { User } from '../entities/user';
 import { ChitInput, ChitDeleteInput, ChitUpdateInput } from './types/chit-input';
-import { Context } from '..';
 
 @Resolver(of => Chit)
 export class ChitResolver {
@@ -31,10 +30,11 @@ export class ChitResolver {
     return this.chitRepository.find();
   }
 
+  @Authorized()
   @Mutation(returns => Chit)
   async createChit(
     @Arg('chit') chitInput: ChitInput,
-    @Ctx() { user }: Context,
+    @Ctx() { user },
   ): Promise<Chit> {
     const chit = this.chitRepository.create({
       ...chitInput,
