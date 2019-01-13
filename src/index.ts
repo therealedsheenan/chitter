@@ -1,18 +1,20 @@
 import 'reflect-metadata';
-import { ApolloServer } from 'apollo-server';
+import { ApolloServer, gql } from 'apollo-server-express';
+import * as express from 'express';
 import { Container } from 'typedi';
 import * as TypeORM from 'typeorm';
 import * as TypeGraphQL from 'type-graphql';
+import * as jwt from 'express-jwt';
 
 import { ChitResolver } from './resolvers/chit.resolver';
 import { UserResolver } from './resolvers/user.resolver';
 import { User } from './entities/user';
 import { Chit } from './entities/chit';
-import { seedDatabase } from './helpers';
+import { authChecker } from './services/auth';
+// import { seedDatabase } from './helpers';
 
-export interface Context {
-  user: User;
-}
+const app = express();
+const path = '/graphql';
 
 // register 3rd party IOC container
 TypeGraphQL.useContainer(Container);
@@ -37,23 +39,43 @@ async function bootstrap() {
     });
 
     // seed database with some data
-    const { defaultUser } = await seedDatabase();
+    // const { defaultUser } = await seedDatabase();
 
     // build TypeGraphQL executable schema
     const schema = await TypeGraphQL.buildSchema({
       resolvers: [ChitResolver, UserResolver],
+      authChecker,
     });
 
-    // create mocked context
-    const context: Context = { user: defaultUser };
-
     // Create GraphQL server
-    const server = new ApolloServer({ schema, context });
+    const server = new ApolloServer({
+      schema,
+      context: ({ req }) => {
+        return {
+          req,
+          user: req.user,
+        };
+      },
+    });
+
+    // Mount a jwt or other authentication middleware that is run before the GraphQL execution
+    app.use(
+      path,
+      jwt({
+        secret: 'topsecret',
+        credentialsRequired: false,
+      }),
+    );
+
+    server.applyMiddleware({ app, path });
 
     // Start the server
-    const { url } = await server.listen(4000);
-    // tslint:disable-next-line
-    console.log(`Server is running, GraphQL Playground available at ${url}`);
+    app.listen({ port: 4000 }, () => {
+      // tslint:disable-next-line
+      console.log(
+        `🚀 Server ready at http://localhost:4000${server.graphqlPath}`,
+      );
+    });
   } catch (err) {
     // tslint:disable-next-line
     console.error(err);
