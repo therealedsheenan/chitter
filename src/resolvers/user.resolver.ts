@@ -34,10 +34,10 @@ export class UserResolver {
     return this.userRepository.find();
   }
 
-  @Mutation(returns => User)
-  async createUser(@Arg('user') userInput: UserInput): Promise<User> {
+  @Mutation(returns => String)
+  async createUser(@Arg('user') userInput: UserInput): Promise<any> {
     const user = this.userRepository.create({ ...userInput });
-    // await this.userRepository.save(user);
+    await this.userRepository.save(user);
 
     return jsonwebtoken.sign(
       {
@@ -51,7 +51,7 @@ export class UserResolver {
     );
   }
 
-  @Mutation(returns => User)
+  @Mutation(returns => String)
   async loginUser(@Arg('user') loginInput: UserLoginInput): Promise<User> {
     const user = await this.userRepository.findOne({
       where: { username: loginInput.username },

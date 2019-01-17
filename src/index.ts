@@ -6,6 +6,7 @@ import * as TypeORM from 'typeorm';
 import * as TypeGraphQL from 'type-graphql';
 import * as jwt from 'express-jwt';
 
+import passportStrategy from './services/passport';
 import { ChitResolver } from './resolvers/chit.resolver';
 import { UserResolver } from './resolvers/user.resolver';
 import { User } from './entities/user';
@@ -40,6 +41,7 @@ async function bootstrap() {
 
     // seed database with some data
     // const { defaultUser } = await seedDatabase();
+    passportStrategy();
 
     // build TypeGraphQL executable schema
     const schema = await TypeGraphQL.buildSchema({
@@ -58,12 +60,24 @@ async function bootstrap() {
       },
     });
 
+    const getTokenFromHeader = (req: express.Request) => {
+      if (
+        req.headers.authorization &&
+        req.headers.authorization.split(' ')[0] === 'Bearer'
+      ) {
+        return req.headers.authorization.split(' ')[1];
+      }
+
+      return undefined;
+    };
+
     // Mount a jwt or other authentication middleware that is run before the GraphQL execution
     app.use(
       path,
       jwt({
         secret: 'topsecret',
         credentialsRequired: false,
+        getToken: getTokenFromHeader,
       }),
     );
 
