@@ -1,7 +1,5 @@
 # mutation Createuser {
-#   createUser(user: { email: "test2@123.com", username: "test2", password:"password123" }) {
-#     email
-#   }
+#   createUser(user: { email: "test2@123.com", username: "test2", password:"password123" })
 # }
 
 # query {
