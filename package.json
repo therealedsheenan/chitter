@@ -25,7 +25,7 @@
     "bcrypt": "^3.0.3",
     "body-parser": "^1.18.3",
     "class-transformer": "^0.2.0",
-    "class-validator": "^0.9.1",
+    "class-validator": "^0.14.0",
     "express": "^4.16.4",
     "express-jwt": "^5.3.1",
     "graphql": "^14.0.2",
